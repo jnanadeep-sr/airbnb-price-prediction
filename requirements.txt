@@ -1,0 +1,15 @@
+# Core pipeline (main.py default run)
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+lightgbm
+xgboost
+
+# Optional extras (only needed for opt-in flags / modules):
+#   --with-sentiment  -> nltk
+#   --with-automl     -> autogluon
+#   src/models/explain.py     -> shap
+#   src/visualization/geo.py  -> folium
+#   src/visualization/text_viz.py -> wordcloud

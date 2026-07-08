@@ -11,7 +11,7 @@ node_modules/
 package-lock.json
 
 # Generated model/report artifacts (data/ above already covers data/processed CSVs)
-notebooks/archive/AutogluonModels/
+AutogluonModels/
 *.png
 notebooks/archive/*.csv
 reports/figures/

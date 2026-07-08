@@ -1,7 +1,7 @@
 """Location-based feature engineering (distance to the beach, tourist hotspots, etc.)."""
 import numpy as np
 
-from src.config import IPANEMA_LAT, IPANEMA_LON, RIO_HOTSPOTS
+from src.config import IPANEMA_LAT, IPANEMA_LON, RIO_CENTER_LAT, RIO_CENTER_LON, RIO_HOTSPOTS
 
 
 def haversine_distance(lat1, lon1, lat2, lon2):
@@ -18,6 +18,13 @@ def add_beach_distance(df, lat_col="latitude", lon_col="longitude"):
     """Add a 'dist_to_beach' column measuring distance to Ipanema Beach."""
     df = df.copy()
     df["dist_to_beach"] = haversine_distance(df[lat_col], df[lon_col], IPANEMA_LAT, IPANEMA_LON)
+    return df
+
+
+def add_city_center_distance(df, lat_col="latitude", lon_col="longitude"):
+    """Add a 'dist_to_city_center' column measuring distance to Centro, Rio de Janeiro."""
+    df = df.copy()
+    df["dist_to_city_center"] = haversine_distance(df[lat_col], df[lon_col], RIO_CENTER_LAT, RIO_CENTER_LON)
     return df
 
 

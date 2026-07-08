@@ -11,6 +11,7 @@ in extra dependencies (nltk, autogluon, shap).
 import argparse
 
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
@@ -19,6 +20,7 @@ from src.data.clean import clean_missing_target
 from src.data.load import load_reviews
 from src.evaluate import print_metrics_log_target
 from src.features.build_features import build_feature_matrix
+from src.features.categorical import fit_categorical_encoders, transform_categorical_features
 from src.models.linear_models import GradientDescentRegressor, train_lasso, train_linear_regression
 from src.models.tree_models import train_lightgbm, train_random_forest, train_xgboost
 
@@ -33,12 +35,19 @@ def parse_args():
 
 def run_fast_pipeline(df):
     """Train the core, fast model set and return {name: metrics} plus predictions for plotting."""
+    y_log = np.log1p(df[TARGET_COLUMN])
+    train_df, test_df, y_train_log, y_test_log = train_test_split(df, y_log, test_size=TEST_SIZE, random_state=RANDOM_STATE)
+
     # 'id' is a listing identifier, not a predictive feature -- some IDs are 19-digit
     # numbers, and feeding that scale into StandardScaler-based models causes overflow.
-    X = df.drop(columns=[TARGET_COLUMN, "id"], errors="ignore").select_dtypes(include=[np.number])
-    y_log = np.log1p(df[TARGET_COLUMN])
+    numeric_cols = df.drop(columns=[TARGET_COLUMN, "id"], errors="ignore").select_dtypes(include=[np.number]).columns
 
-    X_train, X_test, y_train_log, y_test_log = train_test_split(X, y_log, test_size=TEST_SIZE, random_state=RANDOM_STATE)
+    # Fit categorical encoders (room_type, property_type, neighbourhood_cleansed) on the
+    # training split only, then apply to both splits -- avoids leaking test-set category
+    # frequencies/vocabulary into training.
+    encoders = fit_categorical_encoders(train_df)
+    X_train = pd.concat([train_df[numeric_cols], transform_categorical_features(train_df, encoders)], axis=1)
+    X_test = pd.concat([test_df[numeric_cols], transform_categorical_features(test_df, encoders)], axis=1)
 
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
@@ -89,8 +98,6 @@ def main():
 
     print("Step 1/4: Cleaning missing target values...")
     clean_missing_target(RAW_LISTINGS_PATH, CLEANED_TARGET_PATH, target_column=TARGET_COLUMN)
-
-    import pandas as pd
 
     df = pd.read_csv(CLEANED_TARGET_PATH)
 

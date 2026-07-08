@@ -22,6 +22,9 @@ TEST_SIZE = 0.2
 # Reference point used for "distance to the beach" spatial features (Ipanema Beach, Rio).
 IPANEMA_LAT, IPANEMA_LON = -22.9836, -43.2045
 
+# Reference point used for "distance to city center" (Centro, Rio de Janeiro).
+RIO_CENTER_LAT, RIO_CENTER_LON = -22.9068, -43.1729
+
 # Notable Rio landmarks used for the multi-hotspot centrality feature.
 RIO_HOTSPOTS = {
     "dist_luxury_beach": (-22.9836, -43.2045),   # Ipanema/Leblon

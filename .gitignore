@@ -1,3 +1,18 @@
-data/
+/data/
 venv/
 .DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# Node (accidentally introduced; project has no JS dependencies)
+node_modules/
+package-lock.json
+
+# Generated model/report artifacts (data/ above already covers data/processed CSVs)
+notebooks/archive/AutogluonModels/
+*.png
+notebooks/archive/*.csv
+reports/figures/
+rio_price_heatmap.html

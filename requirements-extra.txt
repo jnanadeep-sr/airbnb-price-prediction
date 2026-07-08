@@ -1,0 +1,7 @@
+# Optional dependencies for the opt-in pipeline stages/modules.
+# Install with: pip install -r requirements.txt -r requirements-extra.txt
+nltk          # --with-sentiment (src/features/sentiment.py)
+autogluon     # --with-automl (src/models/automl.py)
+shap          # src/models/explain.py
+folium        # src/visualization/geo.py
+wordcloud     # src/visualization/text_viz.py

@@ -17,7 +17,7 @@ from sklearn.preprocessing import StandardScaler
 from src.config import CLEANED_TARGET_PATH, RANDOM_STATE, RAW_LISTINGS_PATH, TARGET_COLUMN, TEST_SIZE
 from src.data.clean import clean_missing_target
 from src.data.load import load_reviews
-from src.evaluate import print_metrics
+from src.evaluate import print_metrics_log_target
 from src.features.build_features import build_feature_matrix
 from src.models.linear_models import GradientDescentRegressor, train_lasso, train_linear_regression
 from src.models.tree_models import train_lightgbm, train_random_forest, train_xgboost
@@ -75,12 +75,11 @@ def run_fast_pipeline(df):
     predictions["XGBoost"] = xgb_model.predict(X_test)
 
     print("\n" + "=" * 70)
-    print("MODEL COMPARISON (trained on log1p(price), metrics in real dollars)")
+    print("MODEL COMPARISON (MAE/RMSE in real dollars, R^2 in log-space -- the")
+    print("scale the models were actually trained/optimized on)")
     print("=" * 70)
     for name, y_pred_log in predictions.items():
-        y_true_actual = np.expm1(y_test_log)
-        y_pred_actual = np.expm1(y_pred_log)
-        results[name] = print_metrics(name, y_true_actual, y_pred_actual)
+        results[name] = print_metrics_log_target(name, y_test_log, y_pred_log)
 
     return results, predictions, y_test_log
 
